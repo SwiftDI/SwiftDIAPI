@@ -37,7 +37,7 @@ final class GamesController {
             return
         }
 
-        Log.info("GET /games\(uuid.uuidString)")
+        Log.info("GET /games/\(uuid.uuidString)")
         FetchGameByIdUseCase(id: uuid,
                              observer: RPSGameHistoryObserver(response: response),
                              repo: gameRepository)
@@ -47,6 +47,7 @@ final class GamesController {
     private func create(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
         defer { next() }
 
+        Log.info("POST /games")
         guard let values = request.body else {
             try response.status(.badRequest).end()
             return
@@ -57,8 +58,7 @@ final class GamesController {
             return
         }
 
-        Log.info("POST /games")
-        if let p1 = body["player1"].string, let p2 = body["player2"].string {
+        if let p1 = body["p1"].string, let p2 = body["p2"].string {
             PlayUseCase(p1: p1,
                         p2: p2,
                         observer: RPSGameObserver(response: response),

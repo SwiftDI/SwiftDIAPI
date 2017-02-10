@@ -6,7 +6,7 @@ extension Game {
         var dict = [
             "p1": self.p1,
             "p2": self.p2,
-            "result": self.result.display()
+            "result": self.result.rawValue
         ]
         if let id = self.id {
             dict["id"] = id.uuidString

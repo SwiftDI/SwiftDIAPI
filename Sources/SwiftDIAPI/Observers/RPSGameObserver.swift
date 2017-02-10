@@ -1,6 +1,7 @@
 import SwiftDIHLP
 import Kitura
 import SwiftyJSON
+import LoggerAPI
 
 class RPSGameObserver: GameObserver {
     let response: RouterResponse

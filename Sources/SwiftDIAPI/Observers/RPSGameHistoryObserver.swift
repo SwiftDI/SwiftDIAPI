@@ -13,11 +13,11 @@ class RPSGameHistoryObserver: GameHistoryObserver {
         response.status(.OK).send(json: JSON(games.map({$0.toDict()})))
     }
 
-    func fetched(game: Game?) {
-        if let game = game {
-            response.status(.OK).send(json: JSON(game.toDict()))
-        } else {
-            response.status(.notFound)
-        }
+    func fetched(game: Game) {
+        response.status(.OK).send(json: JSON(game.toDict()))
+    }
+
+    func gameNotFound() {
+        response.status(.notFound)
     }
 }

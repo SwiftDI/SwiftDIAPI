@@ -1,4 +1,6 @@
 import Kitura
+import LoggerAPI
+import HeliumLogger
 import SwiftDIHLP
 import Foundation
 
@@ -15,11 +17,13 @@ final class GamesController {
         router.get("/games", handler: index)
         router.get("/games/:gameId", handler: show)
         router.post("/games", handler: create)
+        router.delete("/games", handler: destroyAll)
     }
 
     private func index(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
         defer { next() }
 
+        Log.info("GET /games")
         FetchGamesUseCase(observer: RPSGameHistoryObserver(response: response),
                           repo: gameRepository)
             .execute()
@@ -33,6 +37,7 @@ final class GamesController {
             return
         }
 
+        Log.info("GET /games\(uuid.uuidString)")
         FetchGameByIdUseCase(id: uuid,
                              observer: RPSGameHistoryObserver(response: response),
                              repo: gameRepository)
@@ -52,6 +57,7 @@ final class GamesController {
             return
         }
 
+        Log.info("POST /games")
         if let p1 = body["player1"].string, let p2 = body["player2"].string {
             PlayUseCase(p1: p1,
                         p2: p2,
@@ -59,5 +65,13 @@ final class GamesController {
                         repo: gameRepository)
                 .execute()
         }
+    }
+
+    private func destroyAll(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
+        defer { next() }
+
+        Log.info("DELETE /games")
+        gameRepository.deleteAll()
+        try response.status(.OK).end()
     }
 }

@@ -24,7 +24,7 @@ final class GamesController {
         defer { next() }
 
         Log.info("GET /games")
-        FetchGamesUseCase(observer: RPSGameHistoryObserver(response: response),
+        FetchGamesUseCase(observer: RPSFetchGamesObserver(response: response),
                           repo: gameRepository)
             .execute()
     }
@@ -39,7 +39,7 @@ final class GamesController {
 
         Log.info("GET /games/\(uuid.uuidString)")
         FetchGameByIdUseCase(id: uuid,
-                             observer: RPSGameHistoryObserver(response: response),
+                             observer: RPSFetchGamesObserver(response: response),
                              repo: gameRepository)
             .execute()
     }
@@ -59,9 +59,9 @@ final class GamesController {
         }
 
         if let p1 = body["p1"].string, let p2 = body["p2"].string {
-            PlayUseCase(p1: p1,
+            PlayGameUseCase(p1: p1,
                         p2: p2,
-                        observer: RPSGameObserver(response: response),
+                        observer: RPSPlayGameObserver(response: response),
                         repo: gameRepository)
                 .execute()
         }

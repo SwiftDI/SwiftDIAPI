@@ -2,7 +2,7 @@ import SwiftDIHLP
 import Kitura
 import SwiftyJSON
 
-class RPSGameHistoryObserver: GameHistoryObserver {
+class RPSFetchGamesObserver: FetchGamesObserver, FetchGameObserver {
     let response: RouterResponse
 
     init(response: RouterResponse) {

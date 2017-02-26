@@ -24,8 +24,7 @@ final class GamesController {
         defer { next() }
 
         Log.info("GET /games")
-        FetchGamesUseCase(observer: RPSFetchGamesObserver(response: response),
-                          repo: gameRepository)
+        FetchGames(observer: APIFetchGamesObserver(response: response), repo: gameRepository)
             .execute()
     }
 
@@ -38,10 +37,8 @@ final class GamesController {
         }
 
         Log.info("GET /games/\(uuid.uuidString)")
-        FetchGameByIdUseCase(id: uuid,
-                             observer: RPSFetchGamesObserver(response: response),
-                             repo: gameRepository)
-            .execute()
+        FetchGameById(observer: APIFetchGamesObserver(response: response), repo: gameRepository)
+            .execute(id: uuid)
     }
 
     private func create(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
@@ -59,11 +56,8 @@ final class GamesController {
         }
 
         if let p1 = body["p1"].string, let p2 = body["p2"].string {
-            PlayGameUseCase(p1: p1,
-                        p2: p2,
-                        observer: RPSPlayGameObserver(response: response),
-                        repo: gameRepository)
-                .execute()
+            PlayGame(observer: APIPlayGameObserver(response: response), repo: gameRepository)
+                .execute(p1: p1, p2: p2)
         }
     }
 

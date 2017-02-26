@@ -3,7 +3,7 @@ import Kitura
 import SwiftyJSON
 import LoggerAPI
 
-class RPSPlayGameObserver: PlayGameObserver {
+class APIPlayGameObserver: PlayGameObserver {
     let response: RouterResponse
 
     init(response: RouterResponse) {

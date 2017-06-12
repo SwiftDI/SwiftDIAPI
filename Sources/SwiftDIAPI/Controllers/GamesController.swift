@@ -5,10 +5,7 @@ import SwiftDIHLP
 import Foundation
 
 final class GamesController {
-    let gameRepository: GameRepository
-
-    init(router: Router, gameRepository: GameRepository) {
-        self.gameRepository = gameRepository
+    init(router: Router) {
         createRoutes(router: router)
     }
 
@@ -17,15 +14,13 @@ final class GamesController {
         router.get("/games", handler: index)
         router.get("/games/:gameId", handler: show)
         router.post("/games", handler: create)
-        router.delete("/games", handler: destroyAll)
     }
 
     private func index(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
         defer { next() }
 
         Log.info("GET /games")
-        let fetchGames = FetchGames(repo: gameRepository)
-        fetchGames.execute(observer: APIFetchGamesObserver(response: response))
+        UseCases.fetchGames.execute(observer: APIFetchGamesObserver(response: response))
     }
 
     private func show(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
@@ -37,8 +32,7 @@ final class GamesController {
         }
 
         Log.info("GET /games/\(uuid.uuidString)")
-        let fetchGameById = FetchGameById(repo: gameRepository)
-        fetchGameById.execute(id: uuid, observer: APIFetchGamesObserver(response: response))
+        UseCases.fetchGameById.execute(id: uuid, observer: APIFetchGamesObserver(response: response))
     }
 
     private func create(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
@@ -56,16 +50,7 @@ final class GamesController {
         }
 
         if let p1 = body["p1"].string, let p2 = body["p2"].string {
-            let playGame = PlayGame(repo: gameRepository)
-            playGame.execute(p1: p1, p2: p2, observer: APIPlayGameObserver(response: response))
+            UseCases.playGame.execute(p1: p1, p2: p2, observer: APIPlayGameObserver(response: response))
         }
-    }
-
-    private func destroyAll(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
-        defer { next() }
-
-        Log.info("DELETE /games")
-        gameRepository.deleteAll()
-        try response.status(.OK).end()
     }
 }

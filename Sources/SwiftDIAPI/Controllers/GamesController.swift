@@ -24,8 +24,8 @@ final class GamesController {
         defer { next() }
 
         Log.info("GET /games")
-        FetchGames(observer: APIFetchGamesObserver(response: response), repo: gameRepository)
-            .execute()
+        let fetchGames = FetchGames(repo: gameRepository)
+        fetchGames.execute(observer: APIFetchGamesObserver(response: response))
     }
 
     private func show(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
@@ -37,8 +37,8 @@ final class GamesController {
         }
 
         Log.info("GET /games/\(uuid.uuidString)")
-        FetchGameById(observer: APIFetchGamesObserver(response: response), repo: gameRepository)
-            .execute(id: uuid)
+        let fetchGameById = FetchGameById(repo: gameRepository)
+        fetchGameById.execute(id: uuid, observer: APIFetchGamesObserver(response: response))
     }
 
     private func create(request: RouterRequest, response: RouterResponse, next: () -> Void) throws {
@@ -56,8 +56,8 @@ final class GamesController {
         }
 
         if let p1 = body["p1"].string, let p2 = body["p2"].string {
-            PlayGame(observer: APIPlayGameObserver(response: response), repo: gameRepository)
-                .execute(p1: p1, p2: p2)
+            let playGame = PlayGame(repo: gameRepository)
+            playGame.execute(p1: p1, p2: p2, observer: APIPlayGameObserver(response: response))
         }
     }
 
